@@ -1,29 +1,64 @@
-import qs from 'query-string';
+interface Meter {
+  id: string;
+  _type: string[];
+  installation_date: string;
+  is_automatic: boolean;
+  area: { id: string };
+  initial_values: number[];
+  description: string;
+}
 
-const perform = async (url: string, data: object, config: object) => {
-  const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/${url}`, {
-    ...config,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-  });
-  if (!response.ok) {
-    throw new Error(response.statusText);
+interface MeterAdress {
+  id: string;
+  str_number_full: string;
+  house: {
+    address: string;
+  };
+}
+
+const fetchMeters = async (
+  limit: number,
+  offset: number
+): Promise<{ meters: Meter[] }> => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_SERVER_URL_METERS}?${limit}&${offset}`
+    );
+    const data = await response.json();
+    const meters: Meter[] = data.results;
+    return { meters };
+  } catch (error) {
+    console.error('Error fetching meters', error);
+    return { meters: [] };
   }
-
-  return await response.json();
 };
 
-const getCounters = async (path: string, searchParams = {}) => {
-  return await perform(`${path}/?${qs.stringify(searchParams)}`, {}, {});
+const fetchAddress = async (addressId: string): Promise<MeterAdress> => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_SERVER_URL_AREAS}${addressId}`
+    );
+    const data = await response.json();
+    const address: MeterAdress = data;
+    return address;
+  } catch (error) {
+    console.error('Error fetching addreses', error);
+    throw new Error('Failed to fetch address');
+  }
 };
 
-const getAdress = async (path: string, searchParams = {}) => {
-  return await perform(`${path}/?${qs.stringify(searchParams)}`, {}, {});
+const fetchDeleteMeter = async (meterId: string) => {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_SERVER_URL_METERS}${meterId}`,
+      { method: 'DELETE' }
+    );
+    if (response.ok) {
+      console.log(`Meter ${meterId} has been deleted`);
+    }
+  } catch (error) {
+    console.error('Error fetching delete meter', error);
+  }
 };
 
-const deleteCounter = async (path: string, metersId: number) => {
-  return await perform(`${path}/${metersId}`, {}, { method: 'DELETE' });
-};
-export { getCounters, getAdress, deleteCounter };
+export { fetchMeters, fetchAddress, fetchDeleteMeter };

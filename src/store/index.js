@@ -1,10 +1,8 @@
 import { types } from 'mobx-state-tree';
-import CountersStore from './counters';
-import AdressesStore from './adresses';
+import MetersStore from './meters';
 
 const RootStore = types.model('RootStore', {
-  counters: CountersStore,
-  adresses: AdressesStore,
+  meters: MetersStore,
 });
 
 export default RootStore;

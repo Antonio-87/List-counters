@@ -3,13 +3,13 @@ import { fetchAddress, fetchMeters } from '../api/index';
 
 const Meter = types.model('Meter', {
   id: types.identifier,
-  _type: types.array,
+  _type: types.array(types.string),
   installation_date: types.string,
   is_automatic: types.boolean,
   area: types.object,
-  initial_values: types.array || [],
-  description: types.string || '',
-  address: types.string || '',
+  initial_values: types.optional(types.array(types.number), [0.0]),
+  description: types.maybe(types.string),
+  address: types.maybe(types.string),
 });
 
 const MetersStore = types
@@ -40,6 +40,9 @@ const MetersStore = types
 
         self.meters = metersData.meters;
       }),
+      afterCreate() {
+        self.load;
+      },
     };
   });
 

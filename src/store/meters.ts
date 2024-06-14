@@ -1,7 +1,12 @@
 import { flow, types } from 'mobx-state-tree';
-import { fetchAddress, fetchMeters, shemaMeter } from '../api/index';
+import {
+  fetchAddress,
+  fetchDeleteMeter,
+  fetchMeters,
+  shemaMeter,
+} from '../api/index';
 
-export const Meter = types.model('Meter', {
+const Meter = types.model('Meter', {
   id: types.identifier,
   _type: types.array(types.string),
   installation_date: types.string,
@@ -25,6 +30,16 @@ const MetersStore = types
       return meter ? meter.address : null;
     };
     return {
+      deleteMeter: flow(function* (meterId: string) {
+        try {
+          yield fetchDeleteMeter(meterId);
+          self.meters = types
+            .array(Meter)
+            .create(self.meters?.filter((meter) => meter.id !== meterId));
+        } catch (error) {
+          console.error('Error deleting meter', error);
+        }
+      }),
       load: flow(function* () {
         const metersData = yield fetchMeters(20, 20);
 

@@ -1,4 +1,5 @@
 export interface shemaMeter {
+  address?: string;
   id: string;
   _type: string[];
   installation_date: string;
@@ -9,7 +10,6 @@ export interface shemaMeter {
 }
 
 export interface MeterAdress {
-  id: string;
   str_number_full: string;
   house: {
     address: string;
@@ -22,7 +22,9 @@ const fetchMeters = async (
 ): Promise<{ meters: shemaMeter[] }> => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL_METERS}?${limit}&${offset}`
+      `${
+        import.meta.env.VITE_SERVER_URL_METERS
+      }?limit=${limit}&offset=${offset}`
     );
     const data = await response.json();
     const meters: shemaMeter[] = data.results;

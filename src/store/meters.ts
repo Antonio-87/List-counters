@@ -6,7 +6,7 @@ import {
   shemaMeter,
 } from '../api/index';
 
-const Meter = types.model('Meter', {
+export const Meter = types.model('Meter', {
   id: types.identifier,
   _type: types.array(types.string),
   installation_date: types.string,
@@ -14,7 +14,7 @@ const Meter = types.model('Meter', {
   area: types.model({
     id: types.string,
   }),
-  initial_values: types.optional(types.array(types.number), [0.0]),
+  initial_values: types.array(types.number),
   description: types.optional(types.string, ''),
   address: types.optional(types.string, ''),
 });
@@ -22,6 +22,8 @@ const Meter = types.model('Meter', {
 const MetersStore = types
   .model('MetersStore', {
     meters: types.maybe(types.array(Meter)),
+    currentPage: types.optional(types.number, 1),
+    totalPages: types.optional(types.number, 1),
   })
   .actions((self) => {
     const getAddress = (meterId: string) => {
@@ -29,6 +31,7 @@ const MetersStore = types
         self.meters && self.meters.find((m) => m.area.id === meterId);
       return meter ? meter.address : null;
     };
+
     return {
       deleteMeter: flow(function* (meterId: string) {
         try {
@@ -36,13 +39,16 @@ const MetersStore = types
           self.meters = types
             .array(Meter)
             .create(self.meters?.filter((meter) => meter.id !== meterId));
+          if (self.meters.length === 0 && self.currentPage > 1)
+            self.currentPage -= 1;
         } catch (error) {
           console.error('Error deleting meter', error);
         }
       }),
       load: flow(function* () {
-        const metersData = yield fetchMeters(20, 20);
-
+        const offset = (self.currentPage - 1) * 20;
+        const metersData = yield fetchMeters(20, offset);
+        self.totalPages = Math.ceil(metersData.meters.length / 20);
         yield Promise.all(
           metersData.meters.map(async (meter: shemaMeter) => {
             const addressOld = getAddress(meter.area.id);
@@ -72,6 +78,10 @@ const MetersStore = types
   })
   .actions((self) => ({
     afterCreate() {
+      self.load();
+    },
+    setCurrentPage(page: number) {
+      self.currentPage = page;
       self.load();
     },
   }));

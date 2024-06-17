@@ -1,11 +1,15 @@
 import formatDate from '../functions/formatDate';
-import HVS from './assets/hvs.svg';
-import GVS from './assets/gvs.svg';
-import deleteDefoult from './assets/deleteDefoult.svg';
+import HVS from '../assets/hvs.svg';
+import GVS from '../assets/gvs.svg';
+import deleteDefoult from '../assets/deleteDefoult.svg';
+import deleteHover from '../assets/deleteHover.svg';
 import useStore from '../hooks/useContext';
+import { useState } from 'react';
 
 const MetersList = () => {
   const { meters } = useStore();
+  const [hoverDelete, setHoverDelete] = useState<boolean>(false);
+  const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 
   let startCount = meters.currentPage * 20 - 19;
 
@@ -43,7 +47,15 @@ const MetersList = () => {
             {meters.meters &&
               meters.meters.map((meter) => {
                 return (
-                  <tr key={meter.id}>
+                  <tr
+                    key={meter.id}
+                    onMouseEnter={() => {
+                      setHoveredRowId(meter.id);
+                    }}
+                    onMouseLeave={() => {
+                      setHoveredRowId(null);
+                    }}
+                  >
                     <td>{startCount++}</td>
                     {meter._type[0] === 'ColdWaterAreaMeter' ? (
                       <td>
@@ -60,11 +72,19 @@ const MetersList = () => {
                     <td>{meter.address}</td>
                     <td>{meter.description}</td>
                     <td>
-                      <img
-                        src={deleteDefoult}
-                        onClick={() => meters.deleteMeter(meter.id)}
-                        alt="Delete"
-                      />
+                      {hoveredRowId === meter.id && (
+                        <img
+                          src={hoverDelete ? deleteHover : deleteDefoult}
+                          onClick={() => meters.deleteMeter(meter.id)}
+                          onMouseEnter={() => {
+                            setHoverDelete(true);
+                          }}
+                          onMouseLeave={() => {
+                            setHoverDelete(false);
+                          }}
+                          alt="Delete"
+                        />
+                      )}
                     </td>
                   </tr>
                 );

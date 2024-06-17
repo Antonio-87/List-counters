@@ -54,7 +54,7 @@ const fetchAddress = async (addressId: string): Promise<MeterAdress> => {
 const fetchDeleteMeter = async (meterId: string) => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_SERVER_URL_METERS}${meterId}`,
+      `${import.meta.env.VITE_SERVER_URL_METERS}${meterId}/`,
       { method: 'DELETE' }
     );
     if (response.ok) {

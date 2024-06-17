@@ -15,11 +15,11 @@ const GeneratePaginationButtons = () => {
   }
 
   return (
-    <footer>
+    <footer className="pagination">
       {buttons.map((page) =>
         page === 0 ? (
-          // <span key={page}>'...'</span>
           <select
+            className="pagination-select"
             onChange={(e) => meters.setCurrentPage(parseInt(e.target.value))}
             key={page}
           >
@@ -33,7 +33,11 @@ const GeneratePaginationButtons = () => {
             )}
           </select>
         ) : (
-          <button key={page} onClick={() => meters.setCurrentPage(page)}>
+          <button
+            className="pagination-button"
+            key={page}
+            onClick={() => meters.setCurrentPage(page)}
+          >
             {page}
           </button>
         )

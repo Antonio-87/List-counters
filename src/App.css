@@ -1,2 +1,24 @@
-#root {
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination-button,
+.pagination-select {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: 1px solid #eef0f4;
+  border-radius: 8px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.pagination-button:hover,
+.pagination-select:hover {
+  background-color: #eef0f4;
+}
+
+.pagination-select {
+  padding: 5px;
 }

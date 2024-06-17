@@ -43,7 +43,11 @@ const MetersStore = types
           yield fetchDeleteMeter(meterId);
           self.meters = types
             .array(Meter)
-            .create(self.meters?.filter((meter) => meter.id !== meterId));
+            .create(
+              self.meters?.filter(
+                (meter: { id: string }) => meter.id !== meterId
+              )
+            );
           if (self.meters.length === 0 && self.currentPage > 1)
             self.currentPage -= 1;
         } catch (error) {

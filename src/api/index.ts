@@ -1,4 +1,5 @@
 export interface shemaMeter {
+  count?: number;
   address?: string;
   id: string;
   _type: string[];
@@ -17,21 +18,22 @@ export interface MeterAdress {
 }
 
 const fetchMeters = async (
-  limit: number,
-  offset: number
-): Promise<{ meters: shemaMeter[] }> => {
+  limit?: number,
+  offset?: number
+): Promise<{ meters: shemaMeter[]; count: number | null }> => {
   try {
     const response = await fetch(
-      `${
-        import.meta.env.VITE_SERVER_URL_METERS
-      }?limit=${limit}&offset=${offset}`
+      `${import.meta.env.VITE_SERVER_URL_METERS}${
+        limit ? `?limit=${limit}` : ''
+      }${offset ? `&offset=${offset}` : ''}`
     );
     const data = await response.json();
+    const count = data.count;
     const meters: shemaMeter[] = data.results;
-    return { meters };
+    return { meters, count };
   } catch (error) {
     console.error('Error fetching meters', error);
-    return { meters: [] };
+    return { meters: [], count: null };
   }
 };
 

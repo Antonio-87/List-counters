@@ -33,6 +33,11 @@ const MetersStore = types
     };
 
     return {
+      totalMeters: flow(function* () {
+        const metersData = yield fetchMeters();
+        self.totalPages = Math.ceil(metersData.count / 20);
+      }),
+
       deleteMeter: flow(function* (meterId: string) {
         try {
           yield fetchDeleteMeter(meterId);
@@ -45,10 +50,9 @@ const MetersStore = types
           console.error('Error deleting meter', error);
         }
       }),
-      load: flow(function* () {
+      addMeters: flow(function* () {
         const offset = (self.currentPage - 1) * 20;
         const metersData = yield fetchMeters(20, offset);
-        self.totalPages = Math.ceil(metersData.meters.length / 20);
         yield Promise.all(
           metersData.meters.map(async (meter: shemaMeter) => {
             const addressOld = getAddress(meter.area.id);
@@ -78,11 +82,12 @@ const MetersStore = types
   })
   .actions((self) => ({
     afterCreate() {
-      self.load();
+      self.totalMeters();
+      self.addMeters();
     },
     setCurrentPage(page: number) {
       self.currentPage = page;
-      self.load();
+      self.addMeters();
     },
   }));
 

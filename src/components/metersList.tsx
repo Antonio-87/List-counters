@@ -26,28 +26,30 @@ const MetersList = () => {
   }
 
   return (
-    <div>
-      <header>
+    <div className="meters-list-container">
+      <header className="meters-list-header">
         <h1>Список счетчиков</h1>
       </header>
       <main>
-        <table>
-          <thead>
+        <table className="meters-list-table">
+          <thead className="meters-list-table-title">
             <tr>
-              <th>№</th>
-              <th>Тип</th>
-              <th>Дата установки</th>
-              <th>Автоматический</th>
-              <th>Текущие показания</th>
-              <th>Адрес</th>
-              <th>Примечание</th>
+              <th className="meters-list-th number">№</th>
+              <th className="meters-list-th type">Тип</th>
+              <th className="meters-list-th">Дата установки</th>
+              <th className="meters-list-th">Автоматический</th>
+              <th className="meters-list-th">Текущие показания</th>
+              <th className="meters-list-th">Адрес</th>
+              <th className="meters-list-th description">Примечание</th>
+              <th className="meters-list-th"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="meters-list-body">
             {meters.meters &&
               meters.meters.map((meter) => {
                 return (
                   <tr
+                    className="meters-list-tr"
                     key={meter.id}
                     onMouseEnter={() => {
                       setHoveredRowId(meter.id);
@@ -56,22 +58,28 @@ const MetersList = () => {
                       setHoveredRowId(null);
                     }}
                   >
-                    <td>{startCount++}</td>
+                    <td className="meters-list-td">{startCount++}</td>
                     {meter._type[0] === 'ColdWaterAreaMeter' ? (
-                      <td>
+                      <td className="meters-list-td">
                         <img src={GVS} alt="ГВС" />
                       </td>
                     ) : (
-                      <td>
+                      <td className="meters-list-td">
                         <img src={HVS} alt="ГВС" />
                       </td>
                     )}
-                    <td>{formatDate(meter.installation_date)}</td>
-                    <td>{meter.is_automatic ? 'да' : 'нет'}</td>
-                    <td>{meter.initial_values[0].toFixed(4)}</td>
-                    <td>{meter.address}</td>
-                    <td>{meter.description}</td>
-                    <td>
+                    <td className="meters-list-td">
+                      {formatDate(meter.installation_date)}
+                    </td>
+                    <td className="meters-list-td">
+                      {meter.is_automatic ? 'да' : 'нет'}
+                    </td>
+                    <td className="meters-list-td">
+                      {meter.initial_values[0].toFixed(4)}
+                    </td>
+                    <td className="meters-list-td">{meter.address}</td>
+                    <td className="meters-list-td">{meter.description}</td>
+                    <td className="meters-list-td">
                       {hoveredRowId === meter.id && (
                         <img
                           src={hoverDelete ? deleteHover : deleteDefoult}

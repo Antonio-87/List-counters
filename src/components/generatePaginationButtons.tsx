@@ -22,8 +22,9 @@ const GeneratePaginationButtons = () => {
             className="pagination-select"
             onChange={(e) => meters.setCurrentPage(parseInt(e.target.value))}
             key={page}
+            value="..."
           >
-            <option value="..."></option>
+            <option value="...">...</option>
             {Array.from({ length: meters.totalPages - 5 }, (_, i) => i + 1).map(
               (page) => (
                 <option key={page} value={page}>
@@ -38,7 +39,7 @@ const GeneratePaginationButtons = () => {
             key={page}
             onClick={() => meters.setCurrentPage(page)}
           >
-            {page}
+            {page === 0 ? '...' : page}
           </button>
         )
       )}

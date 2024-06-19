@@ -1,16 +1,19 @@
-import useStore from '../hooks/useContext';
-
-const GeneratePaginationButtons = () => {
-  const { meters } = useStore();
+const GeneratePaginationButtons = ({
+  totalPages,
+  setCurrentPage,
+}: {
+  totalPages: number;
+  setCurrentPage: (page: number) => void;
+}) => {
   let buttons = [];
 
-  if (meters.totalPages <= 6) {
-    buttons = Array.from({ length: meters.totalPages }, (_, i) => i + 1);
+  if (totalPages <= 6) {
+    buttons = Array.from({ length: totalPages }, (_, i) => i + 1);
   } else {
     buttons = [1, 2, 3];
     buttons.push(0);
     buttons = buttons.concat(
-      Array.from({ length: 3 }, (_, i) => meters.totalPages - 2 + i)
+      Array.from({ length: 3 }, (_, i) => totalPages - 2 + i)
     );
   }
 
@@ -20,12 +23,12 @@ const GeneratePaginationButtons = () => {
         page === 0 ? (
           <select
             className="pagination-select"
-            onChange={(e) => meters.setCurrentPage(parseInt(e.target.value))}
+            onChange={(e) => setCurrentPage(parseInt(e.target.value))}
             key={page}
             value="..."
           >
             <option value="...">...</option>
-            {Array.from({ length: meters.totalPages - 5 }, (_, i) => i + 1).map(
+            {Array.from({ length: totalPages - 5 }, (_, i) => i + 1).map(
               (page) => (
                 <option key={page} value={page}>
                   {page}
@@ -37,7 +40,7 @@ const GeneratePaginationButtons = () => {
           <button
             className="pagination-button"
             key={page}
-            onClick={() => meters.setCurrentPage(page)}
+            onClick={() => setCurrentPage(page)}
           >
             {page === 0 ? '...' : page}
           </button>

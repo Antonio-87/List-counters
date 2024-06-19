@@ -1,4 +1,4 @@
-import { flow, types } from 'mobx-state-tree';
+import { Instance, flow, types } from 'mobx-state-tree';
 import {
   fetchAddress,
   fetchDeleteMeter,
@@ -18,6 +18,13 @@ export const Meter = types.model('Meter', {
   description: types.optional(types.string, ''),
   address: types.optional(types.string, ''),
 });
+
+const MetersModel = types.model('Meters', {
+  meters: types.array(Meter),
+});
+
+// Тип для объекта MetersType
+export type MetersType = Instance<typeof MetersModel>;
 
 const MetersStore = types
   .model('MetersStore', {
@@ -41,20 +48,17 @@ const MetersStore = types
       deleteMeter: flow(function* (meterId: string) {
         try {
           yield fetchDeleteMeter(meterId);
-          self.meters = types
-            .array(Meter)
-            .create(
-              self.meters?.filter(
-                (meter: { id: string }) => meter.id !== meterId
-              )
-            );
-          if (self.meters.length === 0 && self.currentPage > 1)
+          const index = self.meters?.findIndex((meter) => meter.id === meterId);
+
+          if (index !== -1) self.meters?.splice(Number(index), 1);
+
+          if (self.meters?.length === 0 && self.currentPage > 1)
             self.currentPage -= 1;
         } catch (error) {
           console.error('Error deleting meter', error);
         }
       }),
-      addMeters: flow(function* () {
+      getMeters: flow(function* () {
         const offset = (self.currentPage - 1) * 20;
         const metersData = yield fetchMeters(20, offset);
         yield Promise.all(
@@ -87,12 +91,15 @@ const MetersStore = types
   .actions((self) => ({
     afterCreate() {
       self.totalMeters();
-      self.addMeters();
+      self.getMeters();
     },
     setCurrentPage(page: number) {
       self.currentPage = page;
-      self.addMeters();
+      self.getMeters();
+    },
+    afterDelete(id: string) {
+      self.deleteMeter(id).then(() => self.getMeters());
     },
   }));
-
+export type MetersStoreType = Instance<typeof MetersStore>;
 export default MetersStore as typeof MetersStore & { load: () => void };

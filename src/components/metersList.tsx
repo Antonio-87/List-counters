@@ -3,11 +3,16 @@ import HVS from '../assets/hvs.svg';
 import GVS from '../assets/gvs.svg';
 import deleteDefoult from '../assets/deleteDefoult.svg';
 import deleteHover from '../assets/deleteHover.svg';
-import useStore from '../hooks/useContext';
 import { useState } from 'react';
+import { MetersStoreType } from '../store/meters';
 
-const MetersList = () => {
-  const { meters } = useStore();
+const MetersList = ({
+  meters,
+  onDeleteMeter,
+}: {
+  meters: MetersStoreType;
+  onDeleteMeter: (id: string) => void;
+}) => {
   const [hoverDelete, setHoverDelete] = useState<boolean>(false);
   const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 
@@ -83,7 +88,7 @@ const MetersList = () => {
                         <img
                           className="icon-delete"
                           src={hoverDelete ? deleteHover : deleteDefoult}
-                          onClick={() => meters.deleteMeter(meter.id)}
+                          onClick={() => onDeleteMeter(meter.id)}
                           onMouseEnter={() => {
                             setHoverDelete(true);
                           }}

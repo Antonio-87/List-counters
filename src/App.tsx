@@ -10,7 +10,7 @@ function App() {
   console.log(JSON.stringify(meters));
   console.log(meters.totalPages);
   return (
-    <div>
+    <div className="meters-list-container">
       <MetersList />
       <GeneratePaginationButtons />
     </div>

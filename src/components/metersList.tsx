@@ -26,30 +26,29 @@ const MetersList = () => {
   }
 
   return (
-    <div className="meters-list-container">
+    <div>
       <header className="meters-list-header">
-        <h1>Список счетчиков</h1>
+        <p>Список счетчиков</p>
       </header>
       <main>
         <table className="meters-list-table">
           <thead className="meters-list-table-title">
-            <tr>
-              <th className="meters-list-th number">№</th>
-              <th className="meters-list-th type">Тип</th>
+            <tr className="meters-list-tr-title">
+              <th className="meters-list-th">№</th>
+              <th className="meters-list-th">Тип</th>
               <th className="meters-list-th">Дата установки</th>
               <th className="meters-list-th">Автоматический</th>
               <th className="meters-list-th">Текущие показания</th>
               <th className="meters-list-th">Адрес</th>
-              <th className="meters-list-th description">Примечание</th>
-              <th className="meters-list-th"></th>
+              <th className="meters-list-th">Примечание</th>
             </tr>
           </thead>
-          <tbody className="meters-list-body">
+          <tbody className="meters-list-table-body">
             {meters.meters &&
               meters.meters.map((meter) => {
                 return (
                   <tr
-                    className="meters-list-tr"
+                    className="meters-list-tr-body"
                     key={meter.id}
                     onMouseEnter={() => {
                       setHoveredRowId(meter.id);
@@ -61,11 +60,11 @@ const MetersList = () => {
                     <td className="meters-list-td">{startCount++}</td>
                     {meter._type[0] === 'ColdWaterAreaMeter' ? (
                       <td className="meters-list-td">
-                        <img src={GVS} alt="ГВС" />
+                        <img className="icon-type" src={GVS} alt="ГВС" />
                       </td>
                     ) : (
                       <td className="meters-list-td">
-                        <img src={HVS} alt="ГВС" />
+                        <img className="icon-type" src={HVS} alt="ГВС" />
                       </td>
                     )}
                     <td className="meters-list-td">
@@ -82,6 +81,7 @@ const MetersList = () => {
                     <td className="meters-list-td">
                       {hoveredRowId === meter.id && (
                         <img
+                          className="icon-delete"
                           src={hoverDelete ? deleteHover : deleteDefoult}
                           onClick={() => meters.deleteMeter(meter.id)}
                           onMouseEnter={() => {

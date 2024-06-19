@@ -67,9 +67,10 @@ table {
   position: relative;
   width: 1408px;
   border-bottom: 1px solid #e0e5eb;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
   cursor: pointer;
+  scrollbar-width: thin;
 }
 
 .meters-list-tr-body {
@@ -145,18 +146,19 @@ td:nth-child(8) {
   width: 1376px;
   height: 32px;
   padding: 8px 16px 8px 16px;
+  gap: 8px;
   color: #ffffff;
   border: 1px solid #eef0f4;
   border-top: 0px;
   border-radius: 0px 0px 8px 8px;
-  margin-right: auto;
 }
 
 .pagination-button,
 .pagination-select {
-  margin: 0 5px;
-  padding: 5px 10px;
-  border: 1px solid #eef0f4;
+  width: 32px;
+  height: 32px;
+  padding: 8px, 12px, 8px, 12px;
+  border: 1px solid #ced5de;
   border-radius: 8px;
   background-color: #ffffff;
   cursor: pointer;
@@ -182,12 +184,7 @@ td:nth-child(8) {
   background-color: #eef0f4;
 }
 
-.meters-list-table-body::before {
-  content: '';
-  position: absolute;
-  height: 363px;
-  width: 4px;
-  top: 0;
-  right: 0;
-  background-color: #5e6674;
+.meters-list-table-body {
+  scrollbar-width: thin;
+  scrollbar-color: #5e6674, #f8f9fa; /* Цвет бегунка и фона скроллбара */
 }
